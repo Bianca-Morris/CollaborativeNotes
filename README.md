@@ -325,6 +325,7 @@ React is a frontend framework that centers around modular building blocks called
 
 ## To Add!!
 
-React Native
-mongoDB / mongoose / mLab
-passport
+React Native  
+mongoDB / mongoose / mLab  
+passport  
+linting  
