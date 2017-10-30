@@ -1,14 +1,55 @@
 import React from 'react';
+import {Editor, EditorState, RichUtils} from 'draft-js';
 
 const displayMessage =
   'The React Redux Boilerplate is running successfully!';
 
 // class component
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      tAlignment: 'left'
+    };
+    this.onChange = (editorState) => this.setState({editorState});
+  }
+  _onBoldClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'BOLD'
+    ));
+  }
+  _onUnderlineClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'UNDERLINE'
+    ));
+  }
+  _onItalicClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'ITALIC'
+    ));
+  }
+  _onRightAlignClick() {
+    this.setState({tAlignment: 'right'});
+  }
   render() {
     return (
-      <div>
-        <p>{displayMessage}</p>
+      <div id='content'>
+        <h1>Draft.js Editor</h1>
+        <button onClick={this._onBoldClick.bind(this)}>Bold</button>
+        <button onClick={this._onItalicClick.bind(this)}>Italic</button>
+        <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
+        <button onClick={this._onRightAlignClick.bind(this)}>Right Align</button>
+        <div className='editor'>
+          <Editor
+            editorState={this.state.editorState}
+            textAlignment={this.state.tAlignment}
+            onChange={this.onChange}
+          />
+        </div>
       </div>
     );
   }
