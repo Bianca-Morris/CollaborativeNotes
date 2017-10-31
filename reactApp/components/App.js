@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState, Modifier, RichUtils} from 'draft-js';
+import {Editor, EditorState, EditorBlock, Modifier, RichUtils} from 'draft-js';
 
 const displayMessage =
   'The React Redux Boilerplate is running successfully!';
@@ -43,11 +43,19 @@ class App extends React.Component {
       'HIGHLIGHT'
     ));
   }
-
-  _onRightAlignClick() {
-    this.setState({tAlignment: 'right'});
+  // Editor calls this method, you need to call toggleBlockType
+  myBlockStyleFn(contentBlock) {
+    console.log('content', contentBlock)
+    const type = contentBlock.getType();
+    if (type === 'blockquote') {
+      return 'superFancyBlockquote';
+    }
   }
-
+  toggleBlockType(blockType) {
+    this.onChange(RichUtils.toggleBlockType(
+      this.state.editorState, blockType
+  ));
+  }
   changeColor(event) {
     var newColor = event.target.value;
     console.log("old color was: " + this.state.selectedColor);
@@ -69,6 +77,7 @@ class App extends React.Component {
     console.log("new color is: " + this.state.selectedColor);
   }
 
+
   render() {
     return (
       <div id='content'>
@@ -76,8 +85,8 @@ class App extends React.Component {
         <button onClick={this._onBoldClick.bind(this)}>Bold</button>
         <button onClick={this._onItalicClick.bind(this)}>Italic</button>
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
-        <button onClick={this._onRightAlignClick.bind(this)}>Right Align</button>
         <button onClick={this._onHighlightClick.bind(this)}>Highlight</button>
+        <button onClick={() => this.toggleBlockType('blockquote')}>BLOCK</button>
         <select
           value={this.state.selectValue}
           onChange={this.changeColor.bind(this)}>
@@ -108,6 +117,7 @@ class App extends React.Component {
             editorState={this.state.editorState}
             textAlignment={this.state.tAlignment}
             onChange={this.onChange}
+            blockStyleFn={this.myBlockStyleFn.bind(this)}
           />
         </div>
       </div>
