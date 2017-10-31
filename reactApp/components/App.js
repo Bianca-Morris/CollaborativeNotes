@@ -12,7 +12,8 @@ class App extends React.Component {
       editorState: EditorState.createEmpty(),
       tAlignment: 'left',
       colorValue: '#000',
-      selectedColor: 'black'
+      selectedColor: 'black',
+      selectedFontSize: 14,
     };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
@@ -57,6 +58,16 @@ class App extends React.Component {
     ));
     console.log("new color is: " + this.state.selectedColor);
   }
+  changeFontSize(event) {
+    var newFontSize = event.target.value;
+    console.log("old color was: " + this.state.selectedFontSize);
+    this.setState({selectedFontSize: newFontSize});
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      newFontSize
+    ));
+    console.log("new color is: " + this.state.selectedColor);
+  }
 
   render() {
     return (
@@ -78,6 +89,18 @@ class App extends React.Component {
           <option value="blue">Blue</option>
           <option value="indigo">Indigo</option>
           <option value="violet">Violet</option>
+        </select>
+        <select
+          value={this.state.selectValue}
+          onChange={this.changeFontSize.bind(this)}>
+          <option defaultValue value="">- size -</option>
+          <option value="10">10</option>
+          <option value="14">14</option>
+          <option value="18">18</option>
+          <option value="24">24</option>
+          <option value="36">36</option>
+          <option value="48">48</option>
+          <option value="86">86</option>
         </select>
         <div className='editor' onClick={this.focus}>
           <Editor
@@ -121,7 +144,15 @@ const styleMap = {
   },
   'BLACK': {
     color: 'rgba(0, 0, 0, 1.0)'
-  }
+  },
+  '10': { fontSize: 10 },
+  '14': { fontSize: 14 },
+  '18': { fontSize: 18 },
+  '24': { fontSize: 24 },
+  '36': { fontSize: 36 },
+  '48': { fontSize: 48 },
+  '86': { fontSize: 86 },
 };
+
 
 export default App;
