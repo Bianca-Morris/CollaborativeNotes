@@ -47,8 +47,17 @@ class App extends React.Component {
   myBlockStyleFn(contentBlock) {
     console.log('content', contentBlock)
     const type = contentBlock.getType();
-    if (type === 'blockquote') {
-      return 'superFancyBlockquote';
+    switch (type){
+      case 'blockquote':
+        return 'superFancyBlockquote';
+      case 'align-left':
+        return 'align-left';
+      case 'align-right':
+        return 'align-right';
+      case 'align-center':
+        return 'align-center';
+      default:
+        return 'align-left';
     }
   }
   toggleBlockType(blockType) {
@@ -87,6 +96,9 @@ class App extends React.Component {
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
         <button onClick={this._onHighlightClick.bind(this)}>Highlight</button>
         <button onClick={() => this.toggleBlockType('blockquote')}>BLOCK</button>
+        <button onClick={() => this.toggleBlockType('align-left')}>Left Align</button>
+        <button onClick={() => this.toggleBlockType('align-right')}>Right Align</button>
+        <button onClick={() => this.toggleBlockType('align-center')}>Center Align</button>
         <select
           value={this.state.selectValue}
           onChange={this.changeColor.bind(this)}>
