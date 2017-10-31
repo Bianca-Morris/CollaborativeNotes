@@ -11,47 +11,13 @@ class App extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty(),
       tAlignment: 'left',
-      color: '#000',
       colorValue: '#000',
+      selectedColor: 'black'
     };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
   }
-  _handleChange(e){
-    console.log('colorValue', colorValue);
-    this.setState({colorValue: e.target.value});
-    console.log(colorValue);
-  }
-  _toggleColor(toggledColor) {
-    const {editorState} = this.state;
-    const selection = editorState.getSelection();
-    // Let's just allow one color at a time. Turn off all active colors.
-    const nextContentState = Object.keys(colorStyleMap)
-      .reduce((contentState, color) => {
-        return Modifier.removeInlineStyle(contentState, selection, color)
-      }, editorState.getCurrentContent());
-    let nextEditorState = EditorState.push(
-      editorState,
-      nextContentState,
-      'change-inline-style'
-    );
-    console.log('NEXT EDITOR STATE', nextEditorState);
-    const currentStyle = editorState.getCurrentInlineStyle();
-    // Unset style override for current color.
-    if (selection.isCollapsed()) {
-      nextEditorState = currentStyle.reduce((state, color) => {
-        return RichUtils.toggleInlineStyle(state, color);
-      }, nextEditorState);
-    }
-    // If the color is being toggled on, apply it.
-    if (!currentStyle.has(toggledColor)) {
-      nextEditorState = RichUtils.toggleInlineStyle(
-        nextEditorState,
-        toggledColor
-      );
-    }
-    this.onChange(nextEditorState);
-  }
+
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
       this.state.editorState,
@@ -76,24 +42,22 @@ class App extends React.Component {
       'HIGHLIGHT'
     ));
   }
-  _onRedClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'RED'
-    ));
-  }
-  _onOrangeClick() {
-    this.onChange(RichUtils.toggleInlineStyle(
-      this.state.editorState,
-      'ORANGE'
-    ));
-  }
+
   _onRightAlignClick() {
     this.setState({tAlignment: 'right'});
   }
-  changeColor(value) {
-    console.log('dropdown.value', dropdown.value)
+
+  changeColor(event) {
+    var newColor = event.target.value;
+    console.log("old color was: " + this.state.selectedColor);
+    this.setState({selectedColor: newColor});
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      newColor.toUpperCase()
+    ));
+    console.log("new color is: " + this.state.selectedColor);
   }
+
   render() {
     return (
       <div id='content'>
@@ -105,14 +69,16 @@ class App extends React.Component {
         <button onClick={this._onHighlightClick.bind(this)}>Highlight</button>
         <select
           value={this.state.selectValue}
-          onChange={this._handleChange} >
+          onChange={this.changeColor.bind(this)}>
+          <option defaultValue value="black">Black</option>
           <option value="red">Red</option>
           <option value="orange">Orange</option>
+          <option value="yellow">Yellow</option>
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="indigo">Indigo</option>
+          <option value="violet">Violet</option>
         </select>
-        <ColorControls
-          editorState={this.state.editorState}
-          onToggle={this.toggleColor}
-        />
         <div className='editor' onClick={this.focus}>
           <Editor
             customStyleMap={styleMap}
@@ -124,58 +90,6 @@ class App extends React.Component {
       </div>
     );
   }
-};
-
-
-
-class StyleButton extends React.Component {
-  constructor(props) {
-    super(props);
-      this.onToggle = (e) => {
-        e.preventDefault();
-        this.props.onToggle(this.props.style);
-      };
-  }
-  render() {
-    let style;
-    if (this.props.active) {
-      style = {...styles.styleButton, ...colorStyleMap[this.props.style]};
-    } else {
-      style = styles.styleButton;
-    }
-    return (
-      <span style={style} onMouseDown={this.onToggle}>
-        {this.props.label}
-      </span>
-    );
-  }
-}
-
-var COLORS = [
-  {label: 'Red', style: 'red'},
-  {label: 'Orange', style: 'orange'},
-  {label: 'Yellow', style: 'yellow'},
-  {label: 'Green', style: 'green'},
-  {label: 'Blue', style: 'blue'},
-  {label: 'Indigo', style: 'indigo'},
-  {label: 'Violet', style: 'violet'},
-];
-
-
-const ColorControls = (props) => {
-  var currentStyle = props.editorState.getCurrentInlineStyle();
-  return (
-    <div style={styles.controls}>
-      {COLORS.map(type =>
-        <StyleButton
-          active={currentStyle.has(type.style)}
-          label={type.label}
-          onToggle={props.onToggle}
-          style={type.style}
-        />
-      )}
-    </div>
-  );
 };
 
 // This object provides the styling information for our custom color
@@ -205,63 +119,9 @@ const styleMap = {
   'VIOLET': {
     color: 'rgba(127, 0, 255, 1.0)',
   },
+  'BLACK': {
+    color: 'rgba(0, 0, 0, 1.0)'
+  }
 };
-
-const styles = {
-  root: {
-    fontFamily: '\'Georgia\', serif',
-    fontSize: 14,
-    padding: 20,
-    width: 600,
-  },
-  editor: {
-    borderTop: '1px solid #ddd',
-    cursor: 'text',
-    fontSize: 16,
-    marginTop: 20,
-    minHeight: 400,
-    paddingTop: 20,
-  },
-  controls: {
-    fontFamily: '\'Helvetica\', sans-serif',
-    fontSize: 14,
-    marginBottom: 10,
-    userSelect: 'none',
-  },
-  styleButton: {
-    color: '#999',
-    cursor: 'pointer',
-    marginRight: 16,
-    padding: '2px 0',
-  },
-};
-
-/* Equivalent function component! */
-// const App = (/* props OR { prop1, prop2 } */) => (
-//    <div>
-//      <p>{displayMessage}</p>
-//    </div>
-// );
-
-
-/*
-==========================================================
-  This is what you do if you want this component or any
-  other to become a connected "container" component!
-==========================================================
-*/
-// /* At top of file: */
-// import { connect } from 'react-redux';
-//
-// /* At bottom of file: */
-// const mapStateToProps = (state) => ({
-//    someStateProp: /* state.something typically */
-// });
-//
-// const mapDispatchToProps = (dispatch) => ({
-//    someDispProp: /* some function that dispatches an action */
-// });
-//
-// App = connect(mapStateToProps, mapDispatchToProps)(App);
 
 export default App;
