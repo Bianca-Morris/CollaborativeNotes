@@ -45,7 +45,7 @@ class App extends React.Component {
   }
   // Editor calls this method, you need to call toggleBlockType
   myBlockStyleFn(contentBlock) {
-    console.log('content', contentBlock)
+    console.log('content', contentBlock);
     const type = contentBlock.getType();
     switch (type){
       case 'blockquote':
@@ -135,7 +135,7 @@ class App extends React.Component {
       </div>
     );
   }
-};
+}
 
 // This object provides the styling information for our custom color
 // styles.

@@ -1,17 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { createStore } from 'redux';
-import { Provider } from 'react-redux';
+var React = require('react');
+var ReactDOM = require('react-dom');
 import App from './components/App';
-/* WHEN YOU ACTUALLY WRITE YOUR REDUCER, FIX THE 2 LINES BELOW */
-// import mainReducer from './reducers/mainReducer'; /*UNCOMMENT*/
-const mainReducer = (state = 5) => state; /*REMOVE*/
 
-const store = createStore(mainReducer);
+/* This can check if your electron app can communicate with your backend */
+// fetch('http://localhost:3000')
+// .then(resp => resp.text())
+// .then(text => console.log(text))
+// .catch(err => {throw err})
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-);
+ReactDOM.render(<App />,
+   document.getElementById('root'));

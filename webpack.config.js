@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 
-
 module.exports = {
   entry: './reactApp/app.js',
   output: {
@@ -15,8 +14,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['es2015', 'react'],
-            plugins: ['transform-object-rest-spread']
+            presets: ['react', 'es2015']
           }
         }
       }
