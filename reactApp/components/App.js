@@ -10,10 +10,17 @@ class App extends React.Component {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
-      tAlignment: 'left'
+      tAlignment: 'left',
+      color: '#000',
+      colorValue: '#000',
     };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
+  }
+  _handleChange(e){
+    console.log('colorValue', colorValue);
+    this.setState({colorValue: e.target.value});
+    console.log(colorValue);
   }
   _toggleColor(toggledColor) {
     const {editorState} = this.state;
@@ -28,6 +35,7 @@ class App extends React.Component {
       nextContentState,
       'change-inline-style'
     );
+    console.log('NEXT EDITOR STATE', nextEditorState);
     const currentStyle = editorState.getCurrentInlineStyle();
     // Unset style override for current color.
     if (selection.isCollapsed()) {
@@ -62,8 +70,29 @@ class App extends React.Component {
       'ITALIC'
     ));
   }
+  _onHighlightClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'HIGHLIGHT'
+    ));
+  }
+  _onRedClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'RED'
+    ));
+  }
+  _onOrangeClick() {
+    this.onChange(RichUtils.toggleInlineStyle(
+      this.state.editorState,
+      'ORANGE'
+    ));
+  }
   _onRightAlignClick() {
     this.setState({tAlignment: 'right'});
+  }
+  changeColor(value) {
+    console.log('dropdown.value', dropdown.value)
   }
   render() {
     return (
@@ -73,13 +102,20 @@ class App extends React.Component {
         <button onClick={this._onItalicClick.bind(this)}>Italic</button>
         <button onClick={this._onUnderlineClick.bind(this)}>Underline</button>
         <button onClick={this._onRightAlignClick.bind(this)}>Right Align</button>
+        <button onClick={this._onHighlightClick.bind(this)}>Highlight</button>
+        <select
+          value={this.state.selectValue}
+          onChange={this._handleChange} >
+          <option value="red">Red</option>
+          <option value="orange">Orange</option>
+        </select>
         <ColorControls
           editorState={this.state.editorState}
           onToggle={this.toggleColor}
         />
         <div className='editor' onClick={this.focus}>
           <Editor
-            customStyleMap={colorStyleMap}
+            customStyleMap={styleMap}
             editorState={this.state.editorState}
             textAlignment={this.state.tAlignment}
             onChange={this.onChange}
@@ -92,32 +128,28 @@ class App extends React.Component {
 
 
 
-
-
 class StyleButton extends React.Component {
-        constructor(props) {
-          super(props);
-          this.onToggle = (e) => {
-            e.preventDefault();
-            this.props.onToggle(this.props.style);
-          };
-        }
-
-        render() {
-          let style;
-          if (this.props.active) {
-            style = {...styles.styleButton, ...colorStyleMap[this.props.style]};
-          } else {
-            style = styles.styleButton;
-          }
-
-          return (
-            <span style={style} onMouseDown={this.onToggle}>
-              {this.props.label}
-            </span>
-          );
-        }
-      }
+  constructor(props) {
+    super(props);
+      this.onToggle = (e) => {
+        e.preventDefault();
+        this.props.onToggle(this.props.style);
+      };
+  }
+  render() {
+    let style;
+    if (this.props.active) {
+      style = {...styles.styleButton, ...colorStyleMap[this.props.style]};
+    } else {
+      style = styles.styleButton;
+    }
+    return (
+      <span style={style} onMouseDown={this.onToggle}>
+        {this.props.label}
+      </span>
+    );
+  }
+}
 
 var COLORS = [
   {label: 'Red', style: 'red'},
@@ -128,6 +160,7 @@ var COLORS = [
   {label: 'Indigo', style: 'indigo'},
   {label: 'Violet', style: 'violet'},
 ];
+
 
 const ColorControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
@@ -147,26 +180,29 @@ const ColorControls = (props) => {
 
 // This object provides the styling information for our custom color
 // styles.
-const colorStyleMap = {
-  red: {
+const styleMap = {
+  'HIGHLIGHT': {
+    backgroundColor: 'lightgreen'
+  },
+  'RED': {
     color: 'rgba(255, 0, 0, 1.0)',
   },
-  orange: {
+  'ORANGE': {
     color: 'rgba(255, 127, 0, 1.0)',
   },
-  yellow: {
+  'YELLOW': {
     color: 'rgba(180, 180, 0, 1.0)',
   },
-  green: {
+  'GREEN': {
     color: 'rgba(0, 180, 0, 1.0)',
   },
-  blue: {
+  'BLUE': {
     color: 'rgba(0, 0, 255, 1.0)',
   },
-  indigo: {
+  'INDIGO': {
     color: 'rgba(75, 0, 130, 1.0)',
   },
-  violet: {
+  'VIOLET': {
     color: 'rgba(127, 0, 255, 1.0)',
   },
 };
