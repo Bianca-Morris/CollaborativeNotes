@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'/>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/site_style.css"/>
+</head>
+
+<body id="body">
+
+{{#if error}}
+  <div class="alert alert-danger" role="alert">
+    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+    <span class="sr-only">Error:</span>
+    {{error}}
+  </div>
+{{/if}}
+
+
+<div class="container-fluid" id="signup-box">
+    <div class="col-xs-10 col-xs-offset-1">
+    <form method="POST">
+    <h1>Prototype</h1>
+      <div class="form-group">
+        <input placeholder="Email" type="text" name="username" class="form-control">
+      </div>
+      <div class="form-group">
+        <input placeholder="Password" type="password" name="password" class="form-control" id="space-down">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-success" id="signup-button">Login</button>
+      </div>
+    </form>
+
+    <h2>
+        <a class="btn btn-primary" id="signup-button" href="/fb/login">Login with Facebook</a>
+    </h2>
+
+    <h2>
+        <a class="btn btn-primary" id="signup-button" href="/">Wait, actually i still need to sign up.</a>
+    </h2>
+    </div>
+</div>
+
+</body>
