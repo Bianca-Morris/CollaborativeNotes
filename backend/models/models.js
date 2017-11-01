@@ -16,16 +16,24 @@ var userSchema = mongoose.Schema({
 });
 
 var documentSchema = mongoose.Schema({
-  username: {
-    type: String,
+  owner: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: false
+  },
+  collaborators: {
+    type: Array,
     required: false
   },
   password: {
     type: String,
     required: false
   },
+  history: {
+    type: Array,
+    required: false
+  },
 });
-
 
 // the ID of the user that follows the other
 // the ID of the user being followed

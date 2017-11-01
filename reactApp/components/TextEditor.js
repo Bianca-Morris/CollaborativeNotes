@@ -1,19 +1,5 @@
 import React from 'react';
-import { Route, Link } from 'react-router-dom';
-import {
-  Router, IndexRoute,
-  hashHistory, browserHistory
-} from 'react-router';
-// add in draft js
-import {
-  Editor,
-  EditorState,
-  EditorBlock,
-  Modifier,
-  RichUtils,
-  convertToRaw
-} from 'draft-js';
-
+import {Editor, EditorState, EditorBlock, Modifier, RichUtils} from 'draft-js';
 const displayMessage =
   'The React Redux Boilerplate is running successfully!';
 // class component
@@ -77,7 +63,6 @@ class TextEditor extends React.Component {
       this.state.editorState, blockType
   ));
   }
-
   changeColor(event) {
     var newColor = event.target.value;
     this.setState({selectedColor: newColor});
@@ -87,7 +72,6 @@ class TextEditor extends React.Component {
     ));
     console.log("new color is: " + this.state.selectedColor);
   }
-
   changeFontSize(event) {
     var newFontSize = event.target.value;
     this.setState({selectedFontSize: newFontSize});
@@ -97,7 +81,6 @@ class TextEditor extends React.Component {
     ));
     console.log("new font size: " + this.state.selectedFontSize);
   }
-
   changeFont(event){
     var newFont = event.target.value;
     this.setState({selectedFont: newFont});
@@ -107,15 +90,6 @@ class TextEditor extends React.Component {
     ));
     console.log("new font: " + this.state.selectedFont)
   }
-
-  saveDocument(){
-    // convert the current content of the editor into JSON
-    var rawDoc = convertToRaw(this.state.editorState.getCurrentContent());
-    console.log(JSON.stringify(rawDoc));
-    // send a post request to '/documentID/save'
-    //
-  }
-
   render() {
     return (
       <div>
@@ -125,7 +99,7 @@ class TextEditor extends React.Component {
               <a className="navbar-brand" href="#">Collaborative Notes</a>
             </div>
             <ul className="nav navbar-nav">
-              <li className="active"><a onClick={()=>this.props.history.goBack()}><span className='glyphicon glyphicon-arrow-left'></span> Back</a></li>
+              <li className="active"><a href="#"><span className='glyphicon glyphicon-arrow-left'></span> Back</a></li>
               <li><a href="#">Invite Collaborators</a></li>
             </ul>
           </div>
@@ -204,7 +178,7 @@ class TextEditor extends React.Component {
           </div>
           <div className='row'>
             <div className='col-md-12'>
-              <button className='btn btn-primary' onClick={() => this.saveDocument()}><span className='glyphicon glyphicon-floppy-disk'></span> Save</button>
+              <button className='btn btn-primary'><span className='glyphicon glyphicon-floppy-disk'></span> Save</button>
               <button className='btn btn-danger'><span className='glyphicon glyphicon-trash'></span> Delete</button>
             </div>
           </div>
