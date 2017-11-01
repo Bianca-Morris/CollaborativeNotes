@@ -2,8 +2,11 @@
 // import { HashRouter}
 var React = require('react');
 var ReactDOM = require('react-dom');
+var { Route, Link } = require('react-router-dom');
+import { HashRouter } from 'react-router-dom'
 import App from './components/App';
 import Signup from './components/Signup';
+import Login from './components/Login';
 
 /* This can check if your electron app can communicate with your backend */
 // fetch('http://localhost:3000')
@@ -25,5 +28,8 @@ import Signup from './components/Signup';
 //   headerMode: 'screen'
 // });
 
-ReactDOM.render(<Signup />,
-   document.getElementById('root'));
+ReactDOM.render((
+    <HashRouter>
+        <App />
+    </HashRouter>
+), document.getElementById('root'));

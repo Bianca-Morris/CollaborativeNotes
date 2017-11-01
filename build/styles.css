@@ -17,3 +17,16 @@
 .align-center {
   text-align: center;
 }
+
+.row {
+  margin-bottom: 10px;
+}
+
+#editor-well {
+  max-height: 300px;
+  overflow: auto;
+}
+
+select {
+  margin-right: 5px;
+}

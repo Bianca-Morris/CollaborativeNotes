@@ -1,7 +1,12 @@
 import React from 'react';
+import {
+  Router, IndexRoute,
+  hashHistory, browserHistory
+} from 'react-router';
+import { Route, Link } from 'react-router-dom';
 
 // class component
-class Signup extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -9,10 +14,10 @@ class Signup extends React.Component {
       password: '',
     };
   }
-  postSignup() {
-    console.log('POST SIGNUP username', this.state.username)
-    console.log('POST SIGNUP password', this.state.password)
-    fetch('http://localhost:3000/signup', {
+  postLogin() {
+    console.log('POST LOGIN username', this.state.username)
+    console.log('POST LOGIN password', this.state.password)
+    fetch('http://localhost:3000/login', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -25,12 +30,12 @@ class Signup extends React.Component {
       })
     })
       .then((response) => {
-        console.log('RESPONSE INSIDE POSTsignup', response)
+        console.log('RESPONSE INSIDE get login', response)
         return response.json();
       })
       .then((responseJson) => {
         if (responseJson.success) {
-          console.log('response inside postlogin', responseJson)
+          console.log('response inside get login', responseJson)
         } else {
           console.log('ISSUE 4.5')
         }
@@ -42,7 +47,7 @@ class Signup extends React.Component {
   render() {
     return (
         <div>
-          <h3>Sign Up</h3>
+          <h3>Login</h3>
           <div>
             <label>Username</label>
             <input
@@ -67,10 +72,12 @@ class Signup extends React.Component {
               onPress={() => this.postSignup().bind(this) }
             >Signup</div>
           </div> */}
-          <button onClick={() => this.postSignup()}>Center Align</button>
+          <button onClick={() => this.postLogin()}>Login</button>
+          <Link to='/signup'>Signup</Link>
+          <Link to='/editor'>Text Editor</Link>
         </div>
     );
   }
 }
 
-export default Signup;
+export default Login;

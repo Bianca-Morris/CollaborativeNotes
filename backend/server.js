@@ -13,7 +13,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({extended: true}));
 
 var cookieSession = require('cookie-session');
 app.use(cookieSession({
@@ -32,17 +32,12 @@ passport.deserializeUser(function(user, done) {
 
 passport.use(new LocalStrategy(function(username, password, done){
  //find the user with the given username
- models.User.findOne({email: username}, function(err, user) {
+ console.log('does it go inside this block')
+ models.User.findOne({username: username, password: password}, function(err, user) {
    //if error, finish trying to authenticate
-   if (err) {
-     console.error(err);
-     return done(err);
-   }
+   if (err) { return done(err); }
    //if no user present auth failed
-   if (!user) {
-     console.log(user);
-     return done(null, false, { message: 'Incorrect username.' });
-   }
+   if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
    // auth has succeeded
    return done(null, user);
  });

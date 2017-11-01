@@ -6,6 +6,8 @@ var models = require('./models/models');
 module.exports = function(passport) {
   router.post('/signup', function(req, res) {
     console.log('reaches');
+    console.log('REQ', req.body);
+    // console.log('RES', res);
     console.log('ru', req.body.username);
     var u = new models.User({
       username: req.body.username,
@@ -17,6 +19,7 @@ module.exports = function(passport) {
         res.status(500).json({success: false});
         return;
       } else {
+        console.log('IT WENT THROUGH PASSPORT');
         res.status(200).json({success: true, user: u});
       }
     });
@@ -32,7 +35,7 @@ module.exports = function(passport) {
   //   res.render('login');
   // });
   router.get('/login/success', function(req, res) {
-    res.status(200).json({success: true});
+    res.status(200).json({success: true, note: 'it got to login success'});
   })
   router.get('/login/failure', function(req, res) {
     res.status(400).json({success: false});
