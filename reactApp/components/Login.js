@@ -75,6 +75,7 @@ class Login extends React.Component {
           <button onClick={() => this.postLogin()}>Login</button>
           <Link to='/signup'>Signup</Link>
           <Link to='/editor'>Text Editor</Link>
+          <Link to='/documentmanager'>Document Manager</Link>
         </div>
     );
   }

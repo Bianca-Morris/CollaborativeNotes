@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 var models = require('./models/models');
 const auth = require('./auth');
+const routes = require('./routes');
 
 
 var handlebars = require('express-handlebars');
@@ -47,6 +48,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', auth(passport));
+app.use('/', routes);
 
 // Example route
 app.get('/', function (req, res) {

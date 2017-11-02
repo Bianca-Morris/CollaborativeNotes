@@ -58,5 +58,28 @@ module.exports = function(passport) {
   //   req.logout();
   //   res.redirect('/login');
   // });
+
+  router.post('/createdoc', function(req, res) {
+    console.log('hit endpoint');
+    var doc = new models.Document({
+      owner: req.body.owner,
+      collaborators: req.body.collaborators,
+      password: req.body.password,
+      history: req.body.history
+    });
+    doc.save(function(err, user) {
+      if (err) {
+        console.log(err);
+        res.status(500).json({success: false});
+        return;
+      } else {
+        console.log('IT WENT THROUGH PASSPORT');
+        res.status(200).json({success: true, doc: doc});
+      }
+    });
+  });
+
+
+
   return router;
 };

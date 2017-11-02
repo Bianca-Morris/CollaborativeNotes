@@ -4,6 +4,7 @@ import { Router, IndexRoute, hashHistory, browserHistory } from 'react-router';
 import Signup from './Signup';
 import Login from './Login';
 import TextEditor from './TextEditor';
+import DocumentManager from './DocumentManager';
 
 class App extends Component {
   render() {
@@ -12,6 +13,7 @@ class App extends Component {
         <Route path='/' exact component={Login} />
         <Route path='/signup' exact component={Signup} />
         <Route path='/editor' exact component={TextEditor} />
+        <Route path='/documentmanager' exact component={DocumentManager} />
       </div>
     )
   }
