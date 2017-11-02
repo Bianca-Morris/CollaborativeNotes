@@ -14,9 +14,10 @@ class Login extends React.Component {
       password: '',
     };
   }
+
   postLogin() {
-    console.log('POST LOGIN username', this.state.username)
-    console.log('POST LOGIN password', this.state.password)
+    console.log("Attempting login.");
+    // Send user information to the express server for validation
     fetch('http://localhost:3000/login', {
       method: 'POST',
       credentials: 'include',
@@ -29,53 +30,60 @@ class Login extends React.Component {
         password: this.state.password,
       })
     })
-      .then((response) => {
-        console.log('RESPONSE INSIDE get login', response)
-        return response.json();
-      })
-      .then((responseJson) => {
-        if (responseJson.success) {
-          console.log('response inside get login', responseJson)
-        } else {
-          console.log('ISSUE 4.5')
-        }
-      })
-      .catch((err) => {
-        console.log('there was an error', err)
-      })
+    // When a response is received, parse it
+    .then((response) => {
+      console.log('Recieved response from express server.', response);
+      return response.json();
+    })
+    // Then, determine whether or not the user was logged in
+    .then((responseJson) => {
+      if (responseJson.success) {
+        console.log('User has been successfully logged in.');
+        // Redirect user to their document manager page
+        this.props.history.push('/documentmanager');
+      } else {
+        console.log('User could not be logged in.');
+        // Update state with appropriate error, for rendering on page
+      }
+    })
+    .catch((err) => {
+      console.log('Login error.', err)
+    })
   }
+  
   render() {
     return (
-        <div>
-          <h3>Login</h3>
-          <div>
-            <label>Username</label>
-            <input
-              type="text"
-              name="username"
-              className="form-control"
-              onChange={(event) => this.setState({ username: event.target.value } )}
-            ></input>
+        <div className='container'>
+          <div className='row'>
+            <div className='col-md-6 offset-6'>
+              <h3>Login</h3>
+              <div>
+                <label>Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  className="form-control"
+                  onChange={(event) => this.setState({ username: event.target.value } )}
+                ></input>
+              </div>
+              <div>
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  className="form-control"
+                  onChange={(event) => this.setState({ password: event.target.value } )}
+                ></input>
+              </div>
+              <br/>
+              <button className="btn btn-primary" onClick={() => this.postLogin()}>Login</button>
+              <Link to='/signup'><button className="btn btn-success">Signup</button></Link>
+              <br/>
+              <Link to='/editor'>Text Editor</Link>
+              <br/>
+              <Link to='/documentmanager'>Document Manager</Link>
+            </div>
           </div>
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              onChange={(event) => this.setState({ password: event.target.value } )}
-            ></input>
-          </div>
-          {/* <div className="form-group">
-            <div
-              className="btn btn-success"
-              onPress={() => this.postSignup().bind(this) }
-            >Signup</div>
-          </div> */}
-          <button onClick={() => this.postLogin()}>Login</button>
-          <Link to='/signup'>Signup</Link>
-          <Link to='/editor'>Text Editor</Link>
-          <Link to='/documentmanager'>Document Manager</Link>
         </div>
     );
   }

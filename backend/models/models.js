@@ -16,6 +16,10 @@ var userSchema = mongoose.Schema({
 });
 
 var documentSchema = mongoose.Schema({
+  title: {
+    type: String,
+    required: true
+  },
   owner: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
