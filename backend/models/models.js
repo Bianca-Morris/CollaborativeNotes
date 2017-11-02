@@ -39,19 +39,6 @@ var documentSchema = mongoose.Schema({
   },
 });
 
-// the ID of the user that follows the other
-// the ID of the user being followed
-var followsSchema = mongoose.Schema({
-  follower: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-  },
-  following: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'User'
-  }
-});
-
 userSchema.methods.getFollowRelations = function (callback){
     var youFollow = [];
     var followYou = [];

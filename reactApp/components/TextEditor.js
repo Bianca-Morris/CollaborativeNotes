@@ -162,6 +162,7 @@ class TextEditor extends React.Component {
             <div className='col-md-12'>
               <h2>[File Name Here]</h2>
               <p>Owned by: [User Name Here]</p>
+              <p>Document id: {this.props.match.params.docId}</p>
               <div className='btn-toolbar' role='toolbar'>
                 <div className='btn-group' role='group'>
                   <button className='btn btn-default' onClick={this._onBoldClick.bind(this)}><span className='glyphicon glyphicon-bold'></span></button>

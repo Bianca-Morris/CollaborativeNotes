@@ -37,8 +37,23 @@ router.post('/createdoc', function(req, res) {
   });
 });
 
-router.get('/fetchuserdocs', function(req, res) {
-
+router.get('/fetchdocs', function(req, res) {
+  console.log("Reached /fetchdocs endpoint");
+  console.log("Attempting to retrieve documents...");
+  Document
+  .find({owner: req.user._id})
+  .exec(function (err, docs){
+     if (err) {
+       console.log("Error retrieving documents: " + err);
+       res.status(500).json({success: false, error: err });
+     } else if (docs.length < 1) {
+       console.log("No documents available.")
+       res.status(200).json({success: true, docs: null });
+     } else {
+       console.log("Documents successfully retrieved from database")
+       res.status(200).json({success: true, docs: docs });
+     }
+  });
 });
 
 module.exports = router;
