@@ -12,7 +12,7 @@ class App extends Component {
       <div>
         <Route path='/' exact component={Login} />
         <Route path='/signup' exact component={Signup} />
-        <Route path='/editor' exact component={TextEditor} />
+        <Route path='/editor/:docId' exact component={TextEditor} />
         <Route path='/documentmanager' exact component={DocumentManager} />
       </div>
     )

@@ -37,6 +37,7 @@ router.post('/createdoc', function(req, res) {
   });
 });
 
+<<<<<<< HEAD
 router.post('/save/documentID', function(req, res) {
   console.log("reached /createdoc endpoint...")
   console.log('REQ.BODY', req.body);
@@ -74,6 +75,25 @@ router.post('/save/documentID', function(req, res) {
 
 router.get('/fetchuserdocs', function(req, res) {
 
+=======
+router.get('/fetchdocs', function(req, res) {
+  console.log("Reached /fetchdocs endpoint");
+  console.log("Attempting to retrieve documents...");
+  Document
+  .find({owner: req.user._id})
+  .exec(function (err, docs){
+     if (err) {
+       console.log("Error retrieving documents: " + err);
+       res.status(500).json({success: false, error: err });
+     } else if (docs.length < 1) {
+       console.log("No documents available.")
+       res.status(200).json({success: true, docs: null });
+     } else {
+       console.log("Documents successfully retrieved from database")
+       res.status(200).json({success: true, docs: docs });
+     }
+  });
+>>>>>>> 6c0c395325b49e7c71a79776b1626591ef53930d
 });
 
 module.exports = router;

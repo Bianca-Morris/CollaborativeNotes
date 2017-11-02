@@ -12,71 +12,48 @@ class DocumentManager extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // idToShare: '',
-      // docTitle: '',
-      // docContents: '',
-      // collaborators: [],
-      // docPassword: '',
-      // history: [],
       myDocuments: [],
       sharedDocuments: [],
       sharedDocPass: null,
       errors: []
     }
   }
-  componentWillMount(){
+  componentDidMount(){
     // fetch the user's authored & collaborative documents
+    console.log("Attempting to retrieve documents from express server.");
     fetch('http://localhost:3000/fetchdocs', {
-      method: 'POST',
+      method: 'GET',
       credentials: 'include',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      })
+      }
     })
-      // update the appropriate piece of state with said documents
+    .then((response) => {
+      console.log('Received response from express server. Parsing...', response)
+      return response.json();
+    })
+    .then((responseJson) => {
+      console.log(responseJson);
+      if (responseJson.success && responseJson.docs) {
+        // update the appropriate piece of state with said documents
+        this.setState({
+          myDocuments: this.state.myDocuments.concat(responseJson.docs)
+        });
+      } else {
+        console.log('Documents could not be loaded.')
+      }
+    })
+    .catch((err) => {
+      console.log('Error retrieving documents from express server.', err)
+    });
     // fetch documents shared with the user
-
   }
 
   shareDocument() {
 
   }
-  getDocument() {
-    // fetch('http://localhost:3000/login', {
-    //   method: 'POST',
-    //   credentials: 'include',
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify({
-    //     username: this.state.username,
-    //     password: this.state.password,
-    //   })
-    // })
-    //   .then((response) => {
-    //     console.log('RESPONSE INSIDE get login', response)
-    //     return response.json();
-    //   })
-    //   .then((responseJson) => {
-    //     if (responseJson.success) {
-    //       console.log('response inside get login', responseJson)
-    //     } else {
-    //       console.log('ISSUE 4.5')
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log('there was an error', err)
-    //   })
-  }
-  openPrompt() {
-    var userInput = prompt()
-  }
+
   createDocument() {
     console.log("Attempting to create new document titled: " + this.refs.documentTitle.value);
     fetch('http://localhost:3000/createdoc', {
@@ -100,7 +77,7 @@ class DocumentManager extends React.Component {
         this.refs.documentTitle.value = null;
         // update the state with new document
         console.log('New document object created: ', responseJson)
-        this.props.history.push('/editor');
+        this.props.history.push('/editor/' + responseJson.doc._id);
       } else {
         console.log('Document was not created.')
       }
@@ -118,20 +95,40 @@ class DocumentManager extends React.Component {
             <Link to='/login'>Login</Link><br/>
             <Link to='/editor'>Text Editor</Link><br/>
             <div className="col-md-6 offset-6">
-              <h3>Documents List {this.state.documentTitle}</h3>
+              <h3>My Portal</h3>
+              <div className="panel panel-default">
+                <div className="panel-heading">
+                  <h3 className="panel-title">My Documents</h3>
+                </div>
+                <div className="list-group">
+                { this.state.myDocuments.map(item => (
+                  <a onClick={() => this.props.history.push("/editor/" + item._id)}className="list-group-item" key={item._id}>{item.title}</a>
+                )) }
+                </div>
+                <div className="panel-footer">
+                  <div className="input-group">
+                    <span className="input-group-addon"><span className="glyphicon glyphicon-pencil"></span></span>
+                    <input type="text" className="form-control" ref="documentTitle"
+                      placeholder="Title your doc here..." />
+                    <span className="input-group-btn">
+                      <button className="btn btn-default" type="button"
+                        onClick={() => this.createDocument() }>Create New Doc</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="panel panel-default">
+                <div className="panel-heading">
+                  <h3 className="panel-title">Shared with Me</h3>
+                </div>
+                <div className="panel-body">
+                  (Shared docs will go here)
+                </div>
+              </div>
               <input
                 type="text"
-                ref="documentTitle"
-                placeholder="New Document Name Here"
-                className="form-control"
-              ></input>
-              <button className="btn" onClick={() => this.createDocument() }>Create Document</button>
-              <ul>
-                { dummyArray.map(item => (<li>{item}</li>)) }
-              </ul>
-              <input
-                type="text"
-                name="idToShare"
+                ref="shareId"
                 className="form-control"
                 onChange={(event) => this.setState({ idToShare: event.target.value } )}
               ></input>
