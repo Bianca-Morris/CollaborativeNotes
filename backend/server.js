@@ -51,9 +51,9 @@ app.use('/', auth(passport));
 app.use('/', routes);
 
 // Example route
-app.get('/', function (req, res) {
-  // res.send('Hello World!')
-})
+// app.get('/', function (req, res) {
+//   // res.send('Hello World!')
+// })
 
 
 app.listen(3000, function () {

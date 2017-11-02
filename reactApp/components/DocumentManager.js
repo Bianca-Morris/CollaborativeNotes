@@ -100,6 +100,7 @@ class DocumentManager extends React.Component {
         this.refs.documentTitle.value = null;
         // update the state with new document
         console.log('New document object created: ', responseJson)
+        this.props.history.push('/editor');
       } else {
         console.log('Document was not created.')
       }

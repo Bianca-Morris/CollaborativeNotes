@@ -16,12 +16,13 @@ router.use('/', function(req, res, next){
 
 router.post('/createdoc', function(req, res) {
   console.log("reached /createdoc endpoint...")
+  console.log('REQ.BODY.TITLE', req.body.docTitle);
   var doc = new models.Document({
+    title: req.body.docTitle,
     owner: req.user._id,
     collaborators: [req.user._id],
     password: '',
     history: [],
-    title: req.body.docTitle
   });
   console.log("attempting to save new document...")
   doc.save(function(err, user) {
