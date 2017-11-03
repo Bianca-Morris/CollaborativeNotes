@@ -8,20 +8,24 @@ import {
 import {
   Editor,
   EditorState,
+  ContentState,
   EditorBlock,
   Modifier,
   RichUtils,
-  convertToRaw
+  convertToRaw,
+  convertFromRaw
 } from 'draft-js';
 
 const displayMessage =
   'The React Redux Boilerplate is running successfully!';
 // class component
+
 class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
+      title: '...',
       collaborators: 'bianca',
       tAlignment: 'left',
       colorValue: '#000',
@@ -32,6 +36,38 @@ class TextEditor extends React.Component {
     };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
+  }
+  componentDidMount() {
+    fetch(`http://localhost:3000/getDoc/${this.props.match.params.docId}`)
+      .then((resp) => {
+        console.log('resp', resp)
+        return resp.json();
+        })
+      .then((responseJson) => {
+        console.log('responseJson', responseJson);
+        if (responseJson.success) {
+            this.setState({
+              title: responseJson.doc.name
+            })
+
+            // const contentState = convertToRaw(rawContentState);
+            // const newEditorStateEditorState.createWithContent(contentState);
+            const doc = responseJson.doc;
+            console.log('CONTENT', doc.history[doc.history.length - 1]);
+            const rawContentState = JSON.parse(doc.history[doc.history.length - 1]);
+            console.log('RAW CONTENT STATE', rawContentState);
+            const contentState = convertFromRaw(rawContentState);
+            console.log('CONTENT STATE', contentState);
+            const newEditorState = EditorState.createWithContent(contentState);
+            console.log('NEW EDITOR STATE', newEditorState);
+            this.setState({
+              title: responseJson.doc.name,
+              editorState: newEditorState
+            })
+        }
+        else { console.log('error') }
+      })
+      .catch((err) => { console.log(err) })
   }
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
@@ -59,7 +95,6 @@ class TextEditor extends React.Component {
   }
   // Editor calls this method, you need to call toggleBlockType
   myBlockStyleFn(contentBlock) {
-    console.log('content', contentBlock);
     const type = contentBlock.getType();
     switch (type){
       case 'blockquote':
@@ -107,7 +142,6 @@ class TextEditor extends React.Component {
       this.state.editorState,
       newFont.toUpperCase()
     ));
-    console.log("new font: " + this.state.selectedFont)
   }
 
   saveDocument(){
@@ -115,7 +149,7 @@ class TextEditor extends React.Component {
     var rawDoc = convertToRaw(this.state.editorState.getCurrentContent());
     var docContents = JSON.stringify(rawDoc);
     // send a post request to '/documentID/save'
-    fetch('http://localhost:3000/save/documentID', {
+    return fetch(`http://localhost:3000/save/${this.props.match.params.docId}`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -126,21 +160,51 @@ class TextEditor extends React.Component {
         currDocContents: [docContents]
       })
     })
+    // gets the response
     .then((response) => {
       console.log('RESPONSE INSIDE save document', response)
       return response.json();
     })
+    // gets the response once it's parsed into json
     .then((responseJson) => {
       if (responseJson.success) {
         console.log('response inside save document', responseJson)
-    } else {
+      } else {
         console.log('ISSUE 4.5')
-    }
+      }
     })
-    .catch((err) => {
-      console.log('there was an error', err)
-    })
+    .catch((err) => { console.log('there was an error', err) })
   }
+  // updateDoc() {
+  //   const contentState = this.state.editorState.getCurrentContent()
+  //   console.log('contentState', contentState);
+  //   const rawContentState = convertToRaw(contentState);
+  //   console.log(rawContentState);
+  //   const stringContent = JSON.stringify(rawContentState);
+  //   console.log(stringContent);
+  //   fetch(`http://localhost:3000/updateDoc/${this.props.match.params.docId}`, {
+  //     method: 'POST',
+  //     credentials: 'include',
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       currDocContents: stringContent
+  //     })
+  //   })
+  //   .then((response) => {
+  //     console.log('respose', response);
+  //     return response.json();
+  //   })
+  //   // gets the response once it's parsed into json
+  //   .then((responseJson) => {
+  //     if (responseJson.success) {
+  //       console.log('json resp', responseJson)
+  //     } else { console.log('no') }
+  //   })
+  //   .catch((err) => { console.log('there was an error', err) })
+  // }
   render() {
     return (
       <div>
@@ -158,7 +222,7 @@ class TextEditor extends React.Component {
         <div className='container'>
           <div className='row'>
             <div className='col-md-12'>
-              <h2>[File Name Here]</h2>
+              <h2>{this.state.title}</h2>
               <p>Owned by: [User Name Here]</p>
               <p>Document id: {this.props.match.params.docId}</p>
               <div className='btn-toolbar' role='toolbar'>
@@ -230,6 +294,7 @@ class TextEditor extends React.Component {
           </div>
           <div className='row'>
             <div className='col-md-12'>
+              {/* <button className='btn btn-primary' onClick={() => this.updateDoc()}><span className='glyphicon glyphicon-floppy-disk'></span> Update</button> */}
               <button className='btn btn-primary' onClick={() => this.saveDocument()}><span className='glyphicon glyphicon-floppy-disk'></span> Save</button>
               <button className='btn btn-danger'><span className='glyphicon glyphicon-trash'></span> Delete</button>
             </div>

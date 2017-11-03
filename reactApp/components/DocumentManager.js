@@ -102,7 +102,7 @@ class DocumentManager extends React.Component {
                 </div>
                 <div className="list-group">
                 { this.state.myDocuments.map(item => (
-                  <a onClick={() => this.props.history.push("/editor/" + item._id)}className="list-group-item" key={item._id}>{item.title}</a>
+                  <a onClick={() => this.props.history.push("/editor/" + item._id)} className="list-group-item" key={item._id}>{item.title}</a>
                 )) }
                 </div>
                 <div className="panel-footer">
