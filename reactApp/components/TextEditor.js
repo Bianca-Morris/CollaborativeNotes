@@ -27,7 +27,8 @@ class TextEditor extends React.Component {
       colorValue: '#000',
       selectedColor: 'black',
       selectedFontSize: 14,
-      selectedFont: 'Ariel'
+      selectedFont: 'Ariel',
+      currDocContents: '',
     };
     this.onChange = (editorState) => this.setState({editorState});
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
@@ -114,7 +115,7 @@ class TextEditor extends React.Component {
     var rawDoc = convertToRaw(this.state.editorState.getCurrentContent());
     var docContents = JSON.stringify(rawDoc);
     // send a post request to '/documentID/save'
-    fetch('http://localhost:3000/documentID', {
+    fetch('http://localhost:3000/save/documentID', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -122,19 +123,16 @@ class TextEditor extends React.Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        owner: req.user,
-        collaborators: this.state.collaborators,
-        docPassword: this.state.docPassword,
-        history: [docContents]
+        currDocContents: [docContents]
       })
     })
     .then((response) => {
-      console.log('RESPONSE INSIDE POSTsignup', response)
+      console.log('RESPONSE INSIDE save document', response)
       return response.json();
     })
     .then((responseJson) => {
       if (responseJson.success) {
-        console.log('response inside postlogin', responseJson)
+        console.log('response inside save document', responseJson)
     } else {
         console.log('ISSUE 4.5')
     }
