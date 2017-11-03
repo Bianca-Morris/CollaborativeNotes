@@ -28,10 +28,9 @@ router.post('/createdoc', function(req, res) {
   doc.save(function(err, user) {
     if (err) {
       console.log(err);
-      res.status(500).json({success: false});
+      res.status(500).json({success: false, error: "Couldn't save new document."});
       return;
     } else {
-      console.log('Document successfully saved to database.');
       res.status(200).json({success: true, doc: doc});
     }
   });
@@ -48,10 +47,10 @@ router.get('/fetchdocs', function(req, res) {
        res.status(500).json({success: false, error: err });
      } else if (docs.length < 1) {
        console.log("No documents available.")
-       res.status(200).json({success: true, docs: null });
+       res.status(200).json({success: true, docs: null, user: req.user.username });
      } else {
        console.log("Documents successfully retrieved from database")
-       res.status(200).json({success: true, docs: docs });
+       res.status(200).json({success: true, docs: docs, user: req.user.username});
      }
   });
 });

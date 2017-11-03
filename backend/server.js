@@ -33,7 +33,7 @@ passport.deserializeUser(function(user, done) {
 
 passport.use(new LocalStrategy(function(username, password, done){
  //find the user with the given username
- console.log('does it go inside this block')
+ console.log('Authenticating...')
  models.User.findOne({username: username, password: password}, function(err, user) {
    //if error, finish trying to authenticate
    if (err) { return done(err); }

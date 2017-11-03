@@ -15,7 +15,8 @@ class DocumentManager extends React.Component {
       myDocuments: [],
       sharedDocuments: [],
       sharedDocPass: null,
-      errors: []
+      errors: [],
+      user: ''
     }
   }
   componentDidMount(){
@@ -43,6 +44,9 @@ class DocumentManager extends React.Component {
       } else {
         console.log('Documents could not be loaded.')
       }
+      this.setState({
+        user: responseJson.user
+      });
     })
     .catch((err) => {
       console.log('Error retrieving documents from express server.', err)
@@ -92,10 +96,10 @@ class DocumentManager extends React.Component {
         <div className="container">
           <div className="row">
             <Link to='/signup'>Signup</Link><br/>
-            <Link to='/login'>Login</Link><br/>
+            <Link to='/'>Login</Link><br/>
             <Link to='/editor'>Text Editor</Link><br/>
             <div className="col-md-6 offset-6">
-              <h3>My Portal</h3>
+              <h3>{this.state.user}'s Portal</h3>
               <div className="panel panel-default">
                 <div className="panel-heading">
                   <h3 className="panel-title">My Documents</h3>
