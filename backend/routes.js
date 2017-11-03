@@ -46,14 +46,49 @@ router.post('/createdoc', function(req, res) {
   doc.save(function(err, user) {
     if (err) {
       console.log(err);
-      res.status(500).json({success: false});
+      res.status(500).json({success: false, error: "Couldn't save new document."});
       return;
     } else {
-      console.log('Document successfully saved to database.');
       res.status(200).json({success: true, doc: doc});
     }
   });
 });
+
+router.post('/save/documentID', function(req, res) {
+  console.log("reached /createdoc endpoint...")
+  console.log('REQ.BODY', req.body);
+  Document.find({_id: "59fb66cd58f680350bde1a22"}, function(err, document) {
+    console.log('DOCUMENT', document);
+    var pastHistory = document[0].history;
+    console.log('pastHistory', pastHistory);
+    console.log('req.body.currDocContents', req.body.currDocContents);
+    var newHistory = pastHistory.push(req.body.currDocContents);
+    console.log('newHistory', newHistory);
+  });
+  db.documents.update(
+    {_id: "59fb66cd58f680350bde1a22"},
+    { $set: { "history": newHistory} }
+  )
+  // var doc = new models.Document({
+  //   title: req.body.docTitle,
+  //   owner: req.user._id,
+  //   collaborators: [req.user._id],
+  //   password: '',
+  //   history: [],
+  // });
+  // console.log("attempting to save new document...")
+  // doc.save(function(err, user) {
+  //   if (err) {
+  //     console.log(err);
+  //     res.status(500).json({success: false});
+  //     return;
+  //   } else {
+  //     console.log('Document successfully saved to database.');
+  //     res.status(200).json({success: true, doc: doc});
+  //   }
+  // });
+});
+
 
 router.get('/fetchdocs', function(req, res) {
   console.log("Reached /fetchdocs endpoint");
@@ -67,10 +102,10 @@ console.log('req.user', req.user);
        res.status(500).json({success: false, error: err });
      } else if (docs.length < 1) {
        console.log("No documents available.")
-       res.status(200).json({success: true, docs: null });
+       res.status(200).json({success: true, docs: null, user: req.user.username });
      } else {
        console.log("Documents successfully retrieved from database")
-       res.status(200).json({success: true, docs: docs });
+       res.status(200).json({success: true, docs: docs, user: req.user.username});
      }
   });
 });

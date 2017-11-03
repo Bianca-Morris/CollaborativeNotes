@@ -6,11 +6,12 @@ mongoose.connect(connect);
 var userSchema = mongoose.Schema({
   username: {
     type: String,
-    required: false
+    required: true,
+    unique: true
   },
   password: {
     type: String,
-    required: false
+    required: true
   },
 
 });
