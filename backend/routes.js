@@ -93,9 +93,10 @@ router.post('/save/documentID', function(req, res) {
 router.get('/fetchdocs', function(req, res) {
   console.log("Reached /fetchdocs endpoint");
   console.log("Attempting to retrieve documents...");
-console.log('req.user', req.user);
+  console.log('req.user', req.user);
   Document
   .find({owner: req.user._id})
+  .populate('owner')
   .exec(function (err, docs){
      if (err) {
        console.log("Error retrieving documents: " + err);

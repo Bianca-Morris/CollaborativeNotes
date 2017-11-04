@@ -26,6 +26,7 @@ class TextEditor extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty(),
       title: '...',
+      owner: '',
       collaborators: 'bianca',
       tAlignment: 'left',
       colorValue: '#000',
@@ -34,7 +35,8 @@ class TextEditor extends React.Component {
       selectedFont: 'Ariel',
       currDocContents: '',
     };
-    this.onChange = (editorState) => this.setState({editorState});
+    // this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = this.onChange.bind(this);
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
   }
   componentDidMount() {
@@ -53,21 +55,21 @@ class TextEditor extends React.Component {
             // const contentState = convertToRaw(rawContentState);
             // const newEditorStateEditorState.createWithContent(contentState);
             const doc = responseJson.doc;
-            console.log('CONTENT', doc.history[doc.history.length - 1]);
             const rawContentState = JSON.parse(doc.history[doc.history.length - 1]);
-            console.log('RAW CONTENT STATE', rawContentState);
             const contentState = convertFromRaw(rawContentState);
-            console.log('CONTENT STATE', contentState);
             const newEditorState = EditorState.createWithContent(contentState);
-            console.log('NEW EDITOR STATE', newEditorState);
             this.setState({
-              title: responseJson.doc.name,
+              title: doc.title,
               editorState: newEditorState
             })
         }
         else { console.log('error') }
       })
       .catch((err) => { console.log(err) })
+  }
+  onChange(editorState) {
+    this.setState({editorState});
+    socket.emit('update', editorState);
   }
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
@@ -206,6 +208,9 @@ class TextEditor extends React.Component {
   //   .catch((err) => { console.log('there was an error', err) })
   // }
   render() {
+    socket.on('update', function(edState) {
+      this.setState({editorState: edState});
+    })
     return (
       <div>
         <nav className="navbar navbar-default">
@@ -223,7 +228,7 @@ class TextEditor extends React.Component {
           <div className='row'>
             <div className='col-md-12'>
               <h2>{this.state.title}</h2>
-              <p>Owned by: [User Name Here]</p>
+              <p>Owned by: dada</p>
               <p>Document id: {this.props.match.params.docId}</p>
               <div className='btn-toolbar' role='toolbar'>
                 <div className='btn-group' role='group'>

@@ -1,5 +1,7 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = require('express')();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 var models = require('./models/models');
 const auth = require('./auth');
 const routes = require('./routes');
@@ -50,12 +52,24 @@ app.use(passport.session());
 app.use('/', auth(passport));
 app.use('/', routes);
 
+io.on('connection', function(socket) {
+  socket.on('openedDocument', function(docid) {
+    socket.join(docid);
+  })
+  socket.on('changeName', function(username) {
+    socket.username = username;
+  })
+  socket.on('update', function(edState) {
+    socket.broadcast.emit('update', edState)
+  })
+})
+
 // Example route
 // app.get('/', function (req, res) {
 //   // res.send('Hello World!')
 // })
 
 
-app.listen(3000, function () {
+server.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!')
 })
