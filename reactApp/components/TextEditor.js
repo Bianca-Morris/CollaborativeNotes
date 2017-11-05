@@ -25,9 +25,9 @@ class TextEditor extends React.Component {
     super(props);
     this.state = {
       editorState: EditorState.createEmpty(),
-      title: '...',
+      title: '',
       owner: '',
-      collaborators: 'bianca',
+      collaborators: [],
       tAlignment: 'left',
       colorValue: '#000',
       selectedColor: 'black',
@@ -35,9 +35,18 @@ class TextEditor extends React.Component {
       selectedFont: 'Ariel',
       currDocContents: '',
     };
-    // this.onChange = (editorState) => this.setState({editorState});
     this.onChange = this.onChange.bind(this);
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
+  }
+  componentWillMount(){
+    // when a new update is received from the server, take that and render it
+    socket.on('update', function(newDocContents) {
+      const docJSON = JSON.parse(newDocContents);
+      const contentState = convertFromRaw(docJSON);
+      this.setState({
+        editorState: EditorState.createWithContent(contentState)
+      });
+    }.bind(this))
   }
   componentDidMount() {
     fetch(`http://localhost:3000/getDoc/${this.props.match.params.docId}`)
@@ -48,18 +57,16 @@ class TextEditor extends React.Component {
       .then((responseJson) => {
         console.log('responseJson', responseJson);
         if (responseJson.success) {
-            this.setState({
-              title: responseJson.doc.name
-            })
-
-            // const contentState = convertToRaw(rawContentState);
-            // const newEditorStateEditorState.createWithContent(contentState);
+            console.log("%%%%%%%%%%%%%%%")
             const doc = responseJson.doc;
+            console.log("doc history: " + doc.history );
             const rawContentState = JSON.parse(doc.history[doc.history.length - 1]);
             const contentState = convertFromRaw(rawContentState);
             const newEditorState = EditorState.createWithContent(contentState);
+            console.log("this: " + this);
             this.setState({
               title: doc.title,
+              owner: doc.owner,
               editorState: newEditorState
             })
         }
@@ -68,8 +75,13 @@ class TextEditor extends React.Component {
       .catch((err) => { console.log(err) })
   }
   onChange(editorState) {
-    this.setState({editorState});
-    socket.emit('update', editorState);
+    // when someone changes the text in the editor,
+    // update the editor state
+    this.setState({editorState: editorState});
+    // emit an update event with the new text
+    var rawDoc = convertToRaw(editorState.getCurrentContent());
+    var docContents = JSON.stringify(rawDoc);
+    socket.emit('update', docContents);
   }
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(
@@ -177,40 +189,8 @@ class TextEditor extends React.Component {
     })
     .catch((err) => { console.log('there was an error', err) })
   }
-  // updateDoc() {
-  //   const contentState = this.state.editorState.getCurrentContent()
-  //   console.log('contentState', contentState);
-  //   const rawContentState = convertToRaw(contentState);
-  //   console.log(rawContentState);
-  //   const stringContent = JSON.stringify(rawContentState);
-  //   console.log(stringContent);
-  //   fetch(`http://localhost:3000/updateDoc/${this.props.match.params.docId}`, {
-  //     method: 'POST',
-  //     credentials: 'include',
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       currDocContents: stringContent
-  //     })
-  //   })
-  //   .then((response) => {
-  //     console.log('respose', response);
-  //     return response.json();
-  //   })
-  //   // gets the response once it's parsed into json
-  //   .then((responseJson) => {
-  //     if (responseJson.success) {
-  //       console.log('json resp', responseJson)
-  //     } else { console.log('no') }
-  //   })
-  //   .catch((err) => { console.log('there was an error', err) })
-  // }
+
   render() {
-    socket.on('update', function(edState) {
-      this.setState({editorState: edState});
-    })
     return (
       <div>
         <nav className="navbar navbar-default">
@@ -228,7 +208,7 @@ class TextEditor extends React.Component {
           <div className='row'>
             <div className='col-md-12'>
               <h2>{this.state.title}</h2>
-              <p>Owned by: dada</p>
+              <p>Owned by: {this.state.owner}</p>
               <p>Document id: {this.props.match.params.docId}</p>
               <div className='btn-toolbar' role='toolbar'>
                 <div className='btn-group' role='group'>

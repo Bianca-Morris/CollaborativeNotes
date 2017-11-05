@@ -24,11 +24,11 @@ var documentSchema = mongoose.Schema({
   owner: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: false
+    required: true
   },
   collaborators: {
     type: Array,
-    required: false
+    required: true
   },
   password: {
     type: String,
@@ -36,7 +36,7 @@ var documentSchema = mongoose.Schema({
   },
   history: {
     type: Array,
-    required: false
+    required: true
   },
 });
 

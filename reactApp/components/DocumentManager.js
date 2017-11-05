@@ -31,11 +31,10 @@ class DocumentManager extends React.Component {
       }
     })
     .then((response) => {
-      console.log('Received response from express server. Parsing...', response)
+      console.log('Received response from express server. Parsing...')
       return response.json();
     })
     .then((responseJson) => {
-      console.log(responseJson);
       if (responseJson.success && responseJson.docs) {
         // update the appropriate piece of state with said documents
         this.setState({
@@ -55,6 +54,12 @@ class DocumentManager extends React.Component {
   }
 
   shareDocument() {
+
+  }
+
+  debugAccessSharedDoc(){
+    socket.emit('openedDocument', this.refs.shareId.value);
+    this.props.history.push("/editor/" + this.refs.shareId.value);
 
   }
 
@@ -90,9 +95,11 @@ class DocumentManager extends React.Component {
       console.log('Error creating document.', err)
     });
   }
-  openDocument(docid) {
-    socket.emit('openedDocument', docid);
-    this.props.history.push("/editor/" + docid);
+  openDocument(id) {
+    socket.emit('openedDocument', id);
+    console.log('Emitted openedDocument event to server!');
+    this.props.history.push("/editor/" + id);
+    console.log('Moving to /editor/'+ id);
   }
 
   render() {
@@ -138,11 +145,9 @@ class DocumentManager extends React.Component {
                 type="text"
                 ref="shareId"
                 className="form-control"
-                onChange={(event) => this.setState({ idToShare: event.target.value } )}
               ></input>
-              <button className="btn" onClick={() => {
-                this.shareDocument()
-                this.openPrompt()
+              <button className="btn btn-secondary" onClick={() => {
+                this.debugAccessSharedDoc()
              } }>Share Document</button>
             </div>
           </div>
