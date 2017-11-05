@@ -13,6 +13,7 @@ class Login extends React.Component {
       username: '',
       password: '',
     };
+    console.log("lololololol");
   }
 
   postLogin() {
@@ -39,7 +40,7 @@ class Login extends React.Component {
     .then((responseJson) => {
       if (responseJson.success) {
         console.log('User has been successfully logged in.');
-        socket.emit('changeName', this.state.username);
+        this.props.socket.emit('changeName', this.state.username);
         // Redirect user to their document manager page
         this.props.history.push('/documentmanager');
       } else {

@@ -40,7 +40,7 @@ class TextEditor extends React.Component {
   }
   componentWillMount(){
     // when a new update is received from the server, take that and render it
-    socket.on('update', function(newDocContents) {
+    this.props.socket.on('update', function(newDocContents) {
       const docJSON = JSON.parse(newDocContents);
       const contentState = convertFromRaw(docJSON);
       this.setState({
@@ -81,7 +81,7 @@ class TextEditor extends React.Component {
     // emit an update event with the new text
     var rawDoc = convertToRaw(editorState.getCurrentContent());
     var docContents = JSON.stringify(rawDoc);
-    socket.emit('update', docContents);
+    this.props.socket.emit('update', docContents);
   }
   _onBoldClick() {
     this.onChange(RichUtils.toggleInlineStyle(

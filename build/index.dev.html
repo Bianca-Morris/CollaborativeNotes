@@ -9,14 +9,6 @@
   <body>
     <div id="root"></div>
   </body>
-
   <script src="http://localhost:8080/app.bundle.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
-  <script>
-    var socket = io('http://localhost:3000');
-    socket.on('connect', function() {
-      console.log('client connected to' + socket.id + '!');
-    });
-  </script>
 </html>

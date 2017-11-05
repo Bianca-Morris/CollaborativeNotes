@@ -6,14 +6,23 @@ import Login from './Login';
 import TextEditor from './TextEditor';
 import DocumentManager from './DocumentManager';
 
+import io from 'socket.io-client';
+const socket = io('http://localhost:3000');
+
 class App extends Component {
+  constructor(props){
+    super(props);
+    socket.on('connect', function() {
+      console.log('client connected to' + socket.id + '!');
+    });
+  }
   render() {
     return (
       <div>
-        <Route path='/' exact component={Login} />
+        <Route path='/' exact component={(props) => <Login {...props} socket={socket} />}/>
         <Route path='/signup' exact component={Signup} />
-        <Route path='/editor/:docId' component={TextEditor} />
-        <Route path='/documentmanager' exact component={DocumentManager} />
+        <Route path='/editor/:docId' component={(props) => <TextEditor {...props} socket={socket}/>} />
+        <Route path='/documentmanager' exact component={(props) => <DocumentManager {...props} socket={socket}/> } />
       </div>
     )
   }

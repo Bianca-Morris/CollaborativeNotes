@@ -58,9 +58,8 @@ class DocumentManager extends React.Component {
   }
 
   debugAccessSharedDoc(){
-    socket.emit('openedDocument', this.refs.shareId.value);
+    this.props.socket.emit('openedDocument', this.refs.shareId.value);
     this.props.history.push("/editor/" + this.refs.shareId.value);
-
   }
 
   createDocument() {
@@ -96,7 +95,7 @@ class DocumentManager extends React.Component {
     });
   }
   openDocument(id) {
-    socket.emit('openedDocument', id);
+    this.props.socket.emit('openedDocument', id);
     console.log('Emitted openedDocument event to server!');
     this.props.history.push("/editor/" + id);
     console.log('Moving to /editor/'+ id);
