@@ -13,7 +13,6 @@ class Login extends React.Component {
       username: '',
       password: '',
     };
-    console.log("lololololol");
   }
 
   postLogin() {

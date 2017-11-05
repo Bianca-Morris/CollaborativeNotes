@@ -59,7 +59,9 @@ class DocumentManager extends React.Component {
 
   debugAccessSharedDoc(){
     this.props.socket.emit('openedDocument', this.refs.shareId.value);
+    // check to see if doc actually exists, then if it does, push to it
     this.props.history.push("/editor/" + this.refs.shareId.value);
+    // if it doesn't, then maybe
   }
 
   createDocument() {

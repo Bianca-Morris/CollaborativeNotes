@@ -1,30 +1,35 @@
+// Create an instance of express, run it on an http server
 const express = require('express');
 const app = require('express')();
 var server = require('http').Server(app);
+// Tell the app's server to use websockets
 var io = require('socket.io')(server);
+// Import models and routes
 var models = require('./models/models');
 const auth = require('./auth');
 const routes = require('./routes');
 
-
-var handlebars = require('express-handlebars');
-app.engine('hbs', handlebars({
-  extname: '.hbs'
-}));
 var path = require('path');
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
-
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({extended: true}));
 
-var cookieSession = require('cookie-session');
-app.use(cookieSession({
-  keys: ['my super secret key']
-}));
+var session = require('express-session');
 
+// Prepare database for storing user data and sessions
+var mongoose = require('mongoose');
+var connect = process.env.MONGODB_URI || require('./connect');
+mongoose.connect(connect);
+var MongoStore = require('connect-mongo')(session);
+
+// Prepare passport modules for user authentication
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
+
+// Middleware to get express-session storing session data in MongoDB
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -33,10 +38,13 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
+var hashPassword = require('./hash');
+// Strategy used to log in users
 passport.use(new LocalStrategy(function(username, password, done){
  //find the user with the given username
  console.log('Authenticating...')
- models.User.findOne({username: username, password: password}, function(err, user) {
+ var hashedPassword = hashPassword(password);
+ models.User.findOne({username: username, password: hashedPassword}, function(err, user) {
    //if error, finish trying to authenticate
    if (err) { return done(err); }
    //if no user present auth failed

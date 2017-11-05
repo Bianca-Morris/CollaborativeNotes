@@ -37,8 +37,6 @@ class TextEditor extends React.Component {
     };
     this.onChange = this.onChange.bind(this);
     this.toggleColor = (toggledColor) => this._toggleColor(toggledColor);
-  }
-  componentWillMount(){
     // when a new update is received from the server, take that and render it
     this.props.socket.on('update', function(newDocContents) {
       const docJSON = JSON.parse(newDocContents);
@@ -48,7 +46,9 @@ class TextEditor extends React.Component {
       });
     }.bind(this))
   }
+
   componentDidMount() {
+    // Retrieves doc information, and fills the editor with it
     fetch(`http://localhost:3000/getDoc/${this.props.match.params.docId}`)
       .then((resp) => {
         console.log('resp', resp)
@@ -59,15 +59,18 @@ class TextEditor extends React.Component {
         if (responseJson.success) {
             console.log("%%%%%%%%%%%%%%%")
             const doc = responseJson.doc;
-            console.log("doc history: " + doc.history );
-            const rawContentState = JSON.parse(doc.history[doc.history.length - 1]);
-            const contentState = convertFromRaw(rawContentState);
-            const newEditorState = EditorState.createWithContent(contentState);
-            console.log("this: " + this);
+            if (doc.history.length >= 1){
+              console.log("doc history: " + doc.history );
+              const rawContentState = JSON.parse(doc.history[doc.history.length - 1]);
+              const contentState = convertFromRaw(rawContentState);
+              const newEditorState = EditorState.createWithContent(contentState);
+              this.setState({editorState: newEditorState});
+              console.log("title: " + doc.title);
+              console.log("owner: " + doc.owner);
+            }
             this.setState({
               title: doc.title,
-              owner: doc.owner,
-              editorState: newEditorState
+              owner: doc.owner
             })
         }
         else { console.log('error') }
@@ -107,6 +110,7 @@ class TextEditor extends React.Component {
       'HIGHLIGHT'
     ));
   }
+
   // Editor calls this method, you need to call toggleBlockType
   myBlockStyleFn(contentBlock) {
     const type = contentBlock.getType();
@@ -123,6 +127,7 @@ class TextEditor extends React.Component {
         return 'align-left';
     }
   }
+
   toggleBlockType(blockType) {
     this.onChange(RichUtils.toggleBlockType(
       this.state.editorState, blockType
@@ -136,7 +141,6 @@ class TextEditor extends React.Component {
       this.state.editorState,
       newColor.toUpperCase()
     ));
-    console.log("new color is: " + this.state.selectedColor);
   }
 
   changeFontSize(event) {
@@ -146,7 +150,6 @@ class TextEditor extends React.Component {
       this.state.editorState,
       newFontSize
     ));
-    console.log("new font size: " + this.state.selectedFontSize);
   }
 
   changeFont(event){

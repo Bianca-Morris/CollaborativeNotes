@@ -2,6 +2,7 @@
 var express = require('express');
 var router = express.Router();
 var models = require('./models/models');
+var hashPassword = require('./hash');
 
 module.exports = function(passport) {
   router.post('/signup', function(req, res) {
@@ -15,7 +16,7 @@ module.exports = function(passport) {
     } else {
         var u = new models.User({
           username: req.body.username,
-          password: req.body.password
+          password: hashPassword(req.body.password)
         });
         u.save(function(err, user) {
           if (err) {
