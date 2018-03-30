@@ -1,0 +1,59 @@
+# CollaborativeNotes
+Rich text editor with real-time collaboration. (MongoDB, Express, React, Electron)
+```
+Writen By: Bianca Morris and Ingrid Zippe
+```
+
+##About
+Collaborative Notes is a desktop application using 
+
+Check out a demo of Bianca walking you through the application here: https://youtu.be/k9cQ_z52RT0
+
+This project is currently INCOMPLETE. As such, there are a few bugs and issues that will listed below in future. 
+
+##Testing
+Clone the git repository. Navigate to that folder in terminal, and create a file called "env.sh". This is a shell script that we'll use to 
+export some environmental variables necessary to test the app (Note: if you know how, you can also just export the variables directly from
+the terminal; there's nothing special about the file itself). The app requires two env variables (case sensitive): MONGODB_URI and 
+SECRET_KEY.
+
+MONGODB_URI should be a link to an empty mongoDB database. You can create one easily at mLab.com. On the dashboard for the mLab database
+you should see two links like these: http://docs.mlab.com/assets/screenshot-connectinfo.png. You'll need to use the second one.
+
+SECRET_KEY should be some random string, and will be used to protect your data.
+
+The final file should be formatted as follows:
+export MONGODB_URI="<my-uri-here>"
+export SECRET_KEY="<my-key-here>"
+
+Now, save your env.sh file, and run the command "source env.sh" in terminal.
+
+Run the application in dev mode with the command "npm run dev." Remember to source env.sh in terminal before any concurrent iterations of 
+the program are run.
+
+##Known Bugs/Issues
+- Have to highlight text in editor to change color/font-style
+- 
+
+##To-Do List
+Interface
+- Remove dev links
+- Add logout button
+- Display collaborator and author names on document page
+- Indicate that document has been saved successfully
+- Indicate why a document has not been created
+
+Functionality
+- Improve share interface
+- Deploy server to heroku
+- Package file as electron distributable
+
+##Policy
+You may not claim ownership of or credit for this project.
+
+##Credits
+Horizons School of Technology for assigning the project to us, and assisting us throughout our dev cycle.
+
+```
+Thanks for taking a look at our program!
+```
