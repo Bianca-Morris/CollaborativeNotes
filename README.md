@@ -7,7 +7,11 @@ Written By: Bianca Morris and Ingrid Zippe
 ## About
 Collaborative Notes is a desktop application built with Draft.js, and deployed as a desktop application with Electron. We used webpack to package the front-end as a single-paged React application, rendered with React-Router. To enable real-time collaboration, we used Socket.io to ping our JSON API back end with updates as clients make changes. Data is stored using MongoDB, authentication is handled with Passport.js, and the server is set up with Express.js.
 
-Check out a demo of Bianca walking you through the application here: https://youtu.be/k9cQ_z52RT0
+Check out a demo of Bianca walking you through the application here: 
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=k9cQ_z52RT0" target="_blank"><img src="http://img.youtube.com/vi/k9cQ_z52RT0/0.jpg" 
+alt="Collaborative Notes Demo Video" width="240" height="180" border="10" /></a>
+https://youtu.be/k9cQ_z52RT0
 
 This project is currently INCOMPLETE. As such, there are a few bugs and issues that will listed below in future. 
 
